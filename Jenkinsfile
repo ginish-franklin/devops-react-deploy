@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        BRANCH_NAME = "${env.GIT_BRANCH}".replaceFirst("origin/", "") // Ensure correct branch detection
+    }
     stages {
         stage('Build') {
             steps {
@@ -8,10 +11,9 @@ pipeline {
         }
         stage('Push to Dev') {
             when {
-                branch 'dev'
+                expression { BRANCH_NAME == 'dev' }
             }
             steps {
-                sh 'echo "current branch is ${env.GIT_BRANCH}"'
                 withCredentials([usernamePassword(credentialsId: 'devops-project-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"'
                     sh 'docker tag devops-build_web:latest frankgin/dev:latest'
@@ -21,7 +23,7 @@ pipeline {
         }
         stage('Push to Prod') {
             when {
-                branch 'master'
+                expression { BRANCH_NAME == 'master' }
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'devops-project-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -33,7 +35,7 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                branch 'master'
+                expression { BRANCH_NAME == 'master' }
             }
             steps {
                 sh './deploy.sh'

@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        BRANCH_NAME = "${env.GIT_BRANCH}".replaceFirst("origin/", "")
+        BRANCH_NAME = "${env.GIT_BRANCH}".replaceFirst("origin/", "") // Ensure correct branch detection
     }
     stages {
         stage('Build') {
@@ -16,7 +16,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"'
-                    sh 'docker tag devops-build_web frankgin/dev:latest'
+                    sh 'docker tag devops-build-web:latest frankgin/dev:latest'
                     sh 'docker push frankgin/dev:latest'
                 }
             }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"'
-                    sh 'docker tag devops-build_web frankgin/prod:latest'
+                    sh 'docker tag devops-build-web:latest frankgin/prod:latest'
                     sh 'docker push frankgin/prod:latest'
                 }
             }

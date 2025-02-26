@@ -11,6 +11,7 @@ pipeline {
                 branch 'dev'
             }
             steps {
+                sh 'echo "current branch is ${env.BRANCH_NAME}"'
                 withCredentials([usernamePassword(credentialsId: 'devops-project-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"'
                     sh 'docker tag devops-build_web:latest frankgin/dev:latest'
@@ -23,6 +24,7 @@ pipeline {
                 branch 'master'
             }
             steps {
+                sh 'echo "current branch is ${env.BRANCH_NAME}"'
                 withCredentials([usernamePassword(credentialsId: 'devops-project-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"'
                     sh 'docker tag devops-build_web:latest frankgin/prod:latest'

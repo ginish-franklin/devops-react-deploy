@@ -1,4 +1,4 @@
-// This is a test comment to trigger a Jenkins build - master.
+// This is a test comment to trigger a Jenkins build - master branch.
 pipeline {
     agent any
     environment {
